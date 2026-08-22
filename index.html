@@ -1223,43 +1223,49 @@
       transform: scale(0.98);
     }
 
-    /* LED ATOMIC GLOW — Green + Cyan + Red mixed pulsing halo around the
-       existing button. Size/position/structure of the button are untouched. */
-    .apk-download-btn {
-      animation: ledAtomicGlow 1.6s ease-in-out infinite;
+    /* ORIGINAL "Download APK" button, above Top Offers — old position, always
+       visible (not scroll-controlled), with a plain GREEN LED pulsing glow. */
+    .dl-green-btn {
+      animation: ledGreenGlow 1.6s ease-in-out infinite;
     }
-    @keyframes ledAtomicGlow {
-      0%   { box-shadow: 0 0 10px 2px rgba(0,230,118,.65), 0 0 22px 6px rgba(0,230,118,.30); }
-      33%  { box-shadow: 0 0 10px 2px rgba(0,255,255,.65), 0 0 22px 6px rgba(0,255,255,.30); }
-      66%  { box-shadow: 0 0 10px 2px rgba(255,59,48,.65), 0 0 22px 6px rgba(255,59,48,.30); }
-      100% { box-shadow: 0 0 10px 2px rgba(0,230,118,.65), 0 0 22px 6px rgba(0,230,118,.30); }
+    @keyframes ledGreenGlow {
+      0%, 100% { box-shadow: 0 0 10px 2px rgba(0,230,118,.65), 0 0 22px 6px rgba(0,230,118,.30); }
+      50%      { box-shadow: 0 0 14px 4px rgba(0,230,118,.85), 0 0 28px 8px rgba(0,230,118,.40); }
     }
 
-    /* Download button stays hidden until the user scrolls down */
-    #detailDownloadBtn.scroll-hidden {
-      opacity: 0;
-      transform: translateY(8px);
-      pointer-events: none;
-    }
-    #detailDownloadBtn {
-      transition: opacity 0.35s ease, transform 0.35s ease;
-    }
-
-    /* Once revealed, the SAME button becomes a fixed bottom-center bar so it
-       stays visible/usable while the user keeps scrolling through Top Offers,
-       About, Safety & Security and Other Related Yono Games — instead of
-       staying stuck at its original top position off-screen. */
-    #detailDownloadBtn.dl-sticky {
+    /* STICKY scroll-triggered download bar (separate button) — appears once
+       the user scrolls down, fixed at the bottom-center of the screen, with
+       a fresh premium color model (same glow mechanic, new color set). */
+    .dl-sticky-btn {
+      display: flex;
       position: fixed;
       left: 50%;
       bottom: 14px;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateY(14px);
       width: min(92vw, 460px);
       margin: 0;
       z-index: 998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      background:
+        radial-gradient(circle at 0 0,#B388FF 0,transparent 42%),
+        radial-gradient(circle at 100% 0,#FF4D9D 0,transparent 42%),
+        radial-gradient(circle at 0 100%,#FFD54F 0,transparent 42%),
+        radial-gradient(circle at 100% 100%,#00E5FF 0,transparent 42%),
+        #7C3CFF;
+      animation: ledAtomicGlowNew 1.6s ease-in-out infinite;
     }
-    #detailDownloadBtn.dl-sticky.scroll-hidden {
-      transform: translateX(-50%) translateY(14px);
+    .dl-sticky-btn.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+    @keyframes ledAtomicGlowNew {
+      0%   { box-shadow: 0 0 10px 2px rgba(124,60,255,.7), 0 0 22px 6px rgba(124,60,255,.35); }
+      33%  { box-shadow: 0 0 10px 2px rgba(255,77,157,.7), 0 0 22px 6px rgba(255,77,157,.35); }
+      66%  { box-shadow: 0 0 10px 2px rgba(255,213,79,.7), 0 0 22px 6px rgba(255,213,79,.35); }
+      100% { box-shadow: 0 0 10px 2px rgba(124,60,255,.7), 0 0 22px 6px rgba(124,60,255,.35); }
     }
 
     /* FLOATING SCROLL-TO-TOP ICON */
@@ -2390,6 +2396,43 @@
       align-items: center;
       gap: 10px;
     }
+
+    /* PREMIUM LED ICON BADGES — reused across How-to-Download steps,
+       About tags, and the Quick-Fact boxes. Each variant is a distinct
+       glowing gradient color. */
+    .led-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      animation: ledBadgePulse 2s ease-in-out infinite;
+    }
+    .led-badge svg {
+      width: 15px;
+      height: 15px;
+      stroke: #ffffff;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    @keyframes ledBadgePulse {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.3); }
+    }
+    .led-badge.led-cyan   { background: linear-gradient(135deg,#00E5FF,#0072FF); box-shadow: 0 0 9px rgba(0,229,255,.75); }
+    .led-badge.led-green  { background: linear-gradient(135deg,#00E676,#00B248); box-shadow: 0 0 9px rgba(0,230,118,.75); }
+    .led-badge.led-purple { background: linear-gradient(135deg,#B388FF,#7C3CFF); box-shadow: 0 0 9px rgba(124,60,255,.75); }
+    .led-badge.led-orange { background: linear-gradient(135deg,#FFB300,#FF6D00); box-shadow: 0 0 9px rgba(255,109,0,.75); }
+    .led-badge.led-pink   { background: linear-gradient(135deg,#FF4D9D,#C2185B); box-shadow: 0 0 9px rgba(255,77,157,.75); }
+    .led-badge.led-teal   { background: linear-gradient(135deg,#1DE9B6,#00897B); box-shadow: 0 0 9px rgba(29,233,182,.75); }
+    .led-badge.led-red    { background: linear-gradient(135deg,#FF5252,#D50000); box-shadow: 0 0 9px rgba(255,82,82,.75); }
+    .led-badge.led-gold   { background: linear-gradient(135deg,#FFD54F,#FF8F00); box-shadow: 0 0 9px rgba(255,213,79,.75); }
+    .led-badge.led-blue   { background: linear-gradient(135deg,#448AFF,#2962FF); box-shadow: 0 0 9px rgba(68,138,255,.75); }
+
     .download-install-section .di-title .di-icon {
       display: inline-flex;
       align-items: center;
@@ -2397,13 +2440,14 @@
       width: 28px;
       height: 28px;
       flex-shrink: 0;
+      border-radius: 9px;
     }
     .download-install-section .di-title .di-icon svg {
-      width: 22px;
-      height: 22px;
+      width: 16px;
+      height: 16px;
       fill: none;
-      stroke: #1a1a1a;
-      stroke-width: 2;
+      stroke: #ffffff;
+      stroke-width: 2.2;
       stroke-linecap: round;
       stroke-linejoin: round;
     }
@@ -2424,21 +2468,21 @@
     }
     .download-install-section .di-item .di-led {
       flex-shrink: 0;
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
+      border-radius: 8px;
     }
     .download-install-section .di-item .di-led svg {
-      width: 100%;
-      height: 100%;
+      width: 14px;
+      height: 14px;
       fill: none;
-      stroke: #000000;
-      stroke-width: 2;
+      stroke: #ffffff;
+      stroke-width: 2.2;
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 0 3px rgba(0,0,0,0.3)) drop-shadow(0 0 6px rgba(0,0,0,0.1));
     }
     .download-install-section .di-item .di-text {
       flex: 1;
@@ -2807,58 +2851,29 @@
           <div class="game-sub">
             <div class="info-row signup">
               <span class="svg-icon">
-                <svg viewBox="0 0 120 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <svg viewBox="0 0 64 64" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                   <defs>
-                    <linearGradient id="giftGoldX" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#FFE66D"/>
-                      <stop offset="50%" stop-color="#FFB300"/>
-                      <stop offset="100%" stop-color="#E88900"/>
-                    </linearGradient>
-                    <linearGradient id="giftRedX" x1="0" y1="0" x2="1" y2="1">
+                    <radialGradient id="bonusLedStatic" cx="35%" cy="30%" r="75%">
+                      <stop offset="0%" stop-color="#FFF6B0"/>
+                      <stop offset="45%" stop-color="#FFD600"/>
+                      <stop offset="100%" stop-color="#FF8A00"/>
+                    </radialGradient>
+                    <linearGradient id="bonusRibbonStatic" x1="0" y1="0" x2="1" y2="1">
                       <stop offset="0%" stop-color="#FF5278"/>
                       <stop offset="100%" stop-color="#C90035"/>
                     </linearGradient>
-                    <linearGradient id="moneyGreenX" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#B8FFD9"/>
-                      <stop offset="50%" stop-color="#00D978"/>
-                      <stop offset="100%" stop-color="#008B50"/>
-                    </linearGradient>
-                    <linearGradient id="moneyBlueX" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#B9E8FF"/>
-                      <stop offset="50%" stop-color="#2196F3"/>
-                      <stop offset="100%" stop-color="#0756C9"/>
-                    </linearGradient>
-                    <linearGradient id="moneyGoldX" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#FFF2A8"/>
-                      <stop offset="50%" stop-color="#FFD000"/>
-                      <stop offset="100%" stop-color="#D88900"/>
-                    </linearGradient>
                   </defs>
-                  <g class="cash cash1">
-                    <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyGreenX)" stroke="#E8FFF2" stroke-width="1.5"/>
-                    <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-                    <text x="60" y="49.5" text-anchor="middle" font-size="6" font-weight="900" fill="#FFFFFF">₹</text>
-                  </g>
-                  <g class="cash cash2">
-                    <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyBlueX)" stroke="#E8F7FF" stroke-width="1.5"/>
-                    <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-                    <text x="60" y="49.5" text-anchor="middle" font-size="7" font-weight="900" fill="#FFFFFF">$</text>
-                  </g>
-                  <g class="cash cash3">
-                    <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyGoldX)" stroke="#FFFBE0" stroke-width="1.5"/>
-                    <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-                    <text x="60" y="49.5" text-anchor="middle" font-size="7" font-weight="900" fill="#FFFFFF">€</text>
-                  </g>
-                  <rect x="25" y="62" width="70" height="50" rx="7" fill="url(#giftGoldX)" stroke="#FFF1A8" stroke-width="2"/>
-                  <rect x="55" y="62" width="10" height="50" rx="2" fill="url(#giftRedX)"/>
-                  <rect x="25" y="75" width="70" height="10" rx="2" fill="url(#giftRedX)"/>
-                  <g class="gift-lid-x">
-                    <rect x="24" y="43" width="72" height="20" rx="5" fill="url(#giftGoldX)" stroke="#FFF1A8" stroke-width="2"/>
-                    <rect x="55" y="43" width="10" height="20" rx="2" fill="url(#giftRedX)"/>
-                    <path d="M60 43C45 31 35 35 39 43 C43 50 52 47 60 43Z" fill="url(#giftRedX)"/>
-                    <path d="M60 43C75 31 85 35 81 43 C77 50 68 47 60 43Z" fill="url(#giftRedX)"/>
-                  </g>
-                  <path d="M34 91V103" stroke="#FFF8D0" stroke-width="3" stroke-linecap="round" opacity=".85"/>
+                  <circle cx="32" cy="32" r="24" fill="url(#bonusLedStatic)" stroke="#FFFFFF" stroke-width="2">
+                    <animate attributeName="r" values="22;25;22" dur="1.5s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="32" cy="32" r="27" fill="none" stroke="#00FFFF" stroke-width="2" opacity="0.5">
+                    <animate attributeName="opacity" values="0.15;0.7;0.15" dur="1.5s" repeatCount="indefinite"/>
+                  </circle>
+                  <rect x="20" y="30" width="24" height="15" rx="2.5" fill="#ffffff"/>
+                  <rect x="20" y="24" width="24" height="7" rx="2" fill="#ffffff"/>
+                  <rect x="30" y="24" width="4" height="21" fill="url(#bonusRibbonStatic)"/>
+                  <path d="M32 24c-5-7-11-4-8 1 2 3 6 1 8-1z" fill="url(#bonusRibbonStatic)"/>
+                  <path d="M32 24c5-7 11-4 8 1-2 3-6 1-8-1z" fill="url(#bonusRibbonStatic)"/>
                 </svg>
               </span>
               <span class="label">Sign Up Bonus</span>
@@ -2866,53 +2881,26 @@
             </div>
             <div class="info-row withdraw">
               <span class="svg-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%" aria-label="Premium Bank">
+                <svg viewBox="0 0 64 64" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
                   <defs>
-                    <linearGradient id="roofRainbow" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#00E5FF"/>
-                      <stop offset="30%" stop-color="#4169FF"/>
-                      <stop offset="65%" stop-color="#9C42FF"/>
-                      <stop offset="100%" stop-color="#FF3CAC"/>
-                    </linearGradient>
-                    <linearGradient id="buildingRainbow" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#00D4FF"/>
-                      <stop offset="35%" stop-color="#007BFF"/>
-                      <stop offset="70%" stop-color="#6C3BFF"/>
-                      <stop offset="100%" stop-color="#B51EFF"/>
-                    </linearGradient>
-                    <linearGradient id="goldPremium" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stop-color="#FFF7A8"/>
-                      <stop offset="35%" stop-color="#FFD84D"/>
-                      <stop offset="70%" stop-color="#FF9F1C"/>
-                      <stop offset="100%" stop-color="#E05A00"/>
-                    </linearGradient>
-                    <linearGradient id="columnGlass" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="#FFFFFF"/>
-                      <stop offset="45%" stop-color="#B8F7FF"/>
-                      <stop offset="100%" stop-color="#6CDEFF"/>
-                    </linearGradient>
-                    <filter id="premiumGlow">
-                      <feGaussianBlur stdDeviation="2" result="blur"/>
-                      <feMerge>
-                        <feMergeNode in="blur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                      </feMerge>
-                    </filter>
+                    <radialGradient id="wdLedStatic" cx="35%" cy="30%" r="75%">
+                      <stop offset="0%" stop-color="#B8FFE0"/>
+                      <stop offset="45%" stop-color="#00E676"/>
+                      <stop offset="100%" stop-color="#00875A"/>
+                    </radialGradient>
                   </defs>
-                  <path d="M10 35L50 10L90 35Z" fill="url(#roofRainbow)" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round" filter="url(#premiumGlow)"/>
-                  <path d="M21 31L50 14L79 31" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".75"/>
-                  <rect x="14" y="34" width="72" height="48" rx="6" fill="url(#buildingRainbow)" stroke="#8FEFFF" stroke-width="2.5"/>
-                  <rect x="20" y="42" width="12" height="31" rx="3" fill="url(#columnGlass)" stroke="#FFFFFF" stroke-width="1.5"/>
-                  <rect x="44" y="42" width="12" height="31" rx="3" fill="url(#columnGlass)" stroke="#FFFFFF" stroke-width="1.5"/>
-                  <rect x="68" y="42" width="12" height="31" rx="3" fill="url(#columnGlass)" stroke="#FFFFFF" stroke-width="1.5"/>
-                  <path d="M23 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-                  <path d="M47 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-                  <path d="M71 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-                  <rect x="8" y="75" width="84" height="10" rx="4" fill="url(#goldPremium)" stroke="#FFF4A0" stroke-width="2"/>
-                  <circle cx="50" cy="23" r="9" fill="url(#goldPremium)" stroke="#FFF8C4" stroke-width="2" filter="url(#premiumGlow)"/>
-                  <text x="50" y="27" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#6B25B8">₹</text>
-                  <path d="M12 48L16 52L12 56L8 52Z" fill="#00FFD5"/>
-                  <path d="M88 48L92 52L88 56L84 52Z" fill="#FFD84D"/>
+                  <circle cx="32" cy="32" r="24" fill="url(#wdLedStatic)" stroke="#FFFFFF" stroke-width="2">
+                    <animate attributeName="r" values="22;25;22" dur="1.5s" repeatCount="indefinite"/>
+                  </circle>
+                  <circle cx="32" cy="32" r="27" fill="none" stroke="#00FFFF" stroke-width="2" opacity="0.5">
+                    <animate attributeName="opacity" values="0.15;0.7;0.15" dur="1.5s" repeatCount="indefinite"/>
+                  </circle>
+                  <path d="M32 18L18 26h28L32 18z" fill="#ffffff"/>
+                  <rect x="18" y="27" width="28" height="2.5" fill="#ffffff"/>
+                  <rect x="21" y="31" width="3" height="10" fill="#ffffff"/>
+                  <rect x="30.5" y="31" width="3" height="10" fill="#ffffff"/>
+                  <rect x="40" y="31" width="3" height="10" fill="#ffffff"/>
+                  <rect x="18" y="43" width="28" height="2.5" fill="#ffffff"/>
                 </svg>
               </span>
               <span class="label">Min. Withdraw</span>
@@ -3065,8 +3053,8 @@
       </div>
       <!-- END FEATURE BAR -->
 
-      <!-- NEW DOWNLOAD BUTTON -->
-      <button class="apk-download-btn scroll-hidden" id="detailDownloadBtn">
+      <!-- NEW DOWNLOAD BUTTON — original position, always visible, plain GREEN LED glow -->
+      <button class="apk-download-btn dl-green-btn" id="detailDownloadBtn">
         <svg class="download-icon" viewBox="0 0 64 64" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
           <defs>
             <linearGradient id="iconHDColor" x1="0" y1="0" x2="1" y2="1">
@@ -3202,51 +3190,33 @@
       <!-- HOW TO DOWNLOAD & INSTALL SECTION - UPDATED -->
       <div class="download-install-section" id="downloadInstallSection">
         <div class="di-title">
-          <span class="di-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
+          <span class="di-icon led-badge led-cyan">
+            <svg viewBox="0 0 24 24"><path d="M7 18a4.5 4.5 0 0 1-1.44-8.77A5.5 5.5 0 0 1 16.2 7.02 4.5 4.5 0 0 1 17.5 16H7z"/><path d="M12 11v7"/><polyline points="9 15 12 18 15 15"/></svg>
           </span>
           <span>How to Download &amp; <span id="downloadGameName">Game Name</span></span>
         </div>
         <div class="di-list">
           <div class="di-item">
-            <span class="di-led">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" stroke="#000000" fill="none"/>
-                <path d="M8 12l3 3 5-5" stroke="#000000"/>
-              </svg>
+            <span class="di-led led-badge led-green">
+              <svg viewBox="0 0 24 24"><path d="M12 3v12"/><polyline points="7 12 12 17 17 12"/><path d="M5 19h14"/><path d="M6 6l2-2h8l2 2" opacity="0"/></svg>
             </span>
             <span class="di-text">Click the green Download button above</span>
           </div>
           <div class="di-item">
-            <span class="di-led">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" stroke="#000000" fill="none"/>
-                <rect x="8" y="7" width="8" height="10" rx="1" stroke="#000000" fill="none"/>
-                <line x1="10" y1="10" x2="14" y2="10" stroke="#000000"/>
-                <line x1="10" y1="13" x2="14" y2="13" stroke="#000000"/>
-              </svg>
+            <span class="di-led led-badge led-purple">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
             </span>
             <span class="di-text">Allow unknown sources: Android Settings → Security → Unknown Sources</span>
           </div>
           <div class="di-item">
-            <span class="di-led">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" stroke="#000000" fill="none"/>
-                <path d="M8 12l3 3 5-5" stroke="#000000"/>
-              </svg>
+            <span class="di-led led-badge led-orange">
+              <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M12 12v5"/><polyline points="9.5 14.5 12 17 14.5 14.5"/></svg>
             </span>
             <span class="di-text">Open the downloaded APK file and tap Install</span>
           </div>
           <div class="di-item">
-            <span class="di-led">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="10" stroke="#000000" fill="none"/>
-                <path d="M12 8v8M8 12h8" stroke="#000000"/>
-              </svg>
+            <span class="di-led led-badge led-blue">
+              <svg viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><line x1="11" y1="18" x2="13" y2="18"/><path d="M9.5 9l2.5-2 2.5 2" stroke-width="1.8"/></svg>
             </span>
             <span class="di-text">Open the app after installation completes</span>
           </div>
@@ -3490,6 +3460,25 @@
     <path d="M5 12l7-7 7 7"/>
   </svg>
 </div>
+
+<!-- STICKY SCROLL-TRIGGERED DOWNLOAD BAR — appears at the bottom-center only
+     while viewing a game's detail page and scrolled down; mirrors the same
+     download link as the main button above Top Offers. -->
+<button class="apk-download-btn dl-sticky-btn" id="detailDownloadBtnSticky">
+  <svg class="download-icon" viewBox="0 0 64 64" width="28" height="28" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="iconHDColorSticky" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#00E5FF"/>
+        <stop offset="35%" stop-color="#B388FF"/>
+        <stop offset="70%" stop-color="#FF4D9D"/>
+        <stop offset="100%" stop-color="#FFD54F"/>
+      </linearGradient>
+    </defs>
+    <path d="M32 7V39M17 28L32 43L47 28" fill="none" stroke="url(#iconHDColorSticky)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M10 45V51 Q10 58 17 58 H47 Q54 58 54 51 V45" fill="none" stroke="url(#iconHDColorSticky)" stroke-width="5" stroke-linecap="round"/>
+  </svg>
+  <span>Download APK</span>
+</button>
 
 <script>
   (function() {
@@ -4432,6 +4421,59 @@
       return { refBonus: refBonus, refCode: code };
     }
 
+    // PREMIUM LED ICONS — compact, pulsing-glow bonus & withdraw icons used
+    // on Home page cards, Next page "Other Related Yono Games" cards, and
+    // the detail page header row.
+    function makeBonusLedIcon(idx) {
+      return `<svg viewBox="0 0 64 64" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="bonusLed_${idx}" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#FFF6B0"/>
+            <stop offset="45%" stop-color="#FFD600"/>
+            <stop offset="100%" stop-color="#FF8A00"/>
+          </radialGradient>
+          <linearGradient id="bonusRibbon_${idx}" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#FF5278"/>
+            <stop offset="100%" stop-color="#C90035"/>
+          </linearGradient>
+        </defs>
+        <circle cx="32" cy="32" r="24" fill="url(#bonusLed_${idx})" stroke="#FFFFFF" stroke-width="2">
+          <animate attributeName="r" values="22;25;22" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="32" cy="32" r="27" fill="none" stroke="#00FFFF" stroke-width="2" opacity="0.5">
+          <animate attributeName="opacity" values="0.15;0.7;0.15" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <rect x="20" y="30" width="24" height="15" rx="2.5" fill="#ffffff"/>
+        <rect x="20" y="24" width="24" height="7" rx="2" fill="#ffffff"/>
+        <rect x="30" y="24" width="4" height="21" fill="url(#bonusRibbon_${idx})"/>
+        <path d="M32 24c-5-7-11-4-8 1 2 3 6 1 8-1z" fill="url(#bonusRibbon_${idx})"/>
+        <path d="M32 24c5-7 11-4 8 1-2 3-6 1-8-1z" fill="url(#bonusRibbon_${idx})"/>
+      </svg>`;
+    }
+    function makeWithdrawLedIcon(idx) {
+      return `<svg viewBox="0 0 64 64" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="wdLed_${idx}" cx="35%" cy="30%" r="75%">
+            <stop offset="0%" stop-color="#B8FFE0"/>
+            <stop offset="45%" stop-color="#00E676"/>
+            <stop offset="100%" stop-color="#00875A"/>
+          </radialGradient>
+        </defs>
+        <circle cx="32" cy="32" r="24" fill="url(#wdLed_${idx})" stroke="#FFFFFF" stroke-width="2">
+          <animate attributeName="r" values="22;25;22" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <circle cx="32" cy="32" r="27" fill="none" stroke="#00FFFF" stroke-width="2" opacity="0.5">
+          <animate attributeName="opacity" values="0.15;0.7;0.15" dur="1.5s" repeatCount="indefinite"/>
+        </circle>
+        <path d="M32 18L18 26h28L32 18z" fill="#ffffff"/>
+        <rect x="18" y="27" width="28" height="2.5" fill="#ffffff"/>
+        <rect x="21" y="31" width="3" height="10" fill="#ffffff"/>
+        <rect x="30.5" y="31" width="3" height="10" fill="#ffffff"/>
+        <rect x="40" y="31" width="3" height="10" fill="#ffffff"/>
+        <rect x="18" y="43" width="28" height="2.5" fill="#ffffff"/>
+      </svg>`;
+    }
+
     function renderGrid() {
       mainGrid.innerHTML = '';
       uniqueGames.forEach((game, index) => {
@@ -4459,111 +4501,8 @@
         card.dataset.metaBonus = metaBonus;
         card.dataset.version = version;
 
-        const giftSvg = `<svg viewBox="0 0 120 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="giftGoldX_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FFE66D"/>
-              <stop offset="50%" stop-color="#FFB300"/>
-              <stop offset="100%" stop-color="#E88900"/>
-            </linearGradient>
-            <linearGradient id="giftRedX_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FF5278"/>
-              <stop offset="100%" stop-color="#C90035"/>
-            </linearGradient>
-            <linearGradient id="moneyGreenX_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#B8FFD9"/>
-              <stop offset="50%" stop-color="#00D978"/>
-              <stop offset="100%" stop-color="#008B50"/>
-            </linearGradient>
-            <linearGradient id="moneyBlueX_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#B9E8FF"/>
-              <stop offset="50%" stop-color="#2196F3"/>
-              <stop offset="100%" stop-color="#0756C9"/>
-            </linearGradient>
-            <linearGradient id="moneyGoldX_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FFF2A8"/>
-              <stop offset="50%" stop-color="#FFD000"/>
-              <stop offset="100%" stop-color="#D88900"/>
-            </linearGradient>
-          </defs>
-          <g class="cash cash1">
-            <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyGreenX_${index})" stroke="#E8FFF2" stroke-width="1.5"/>
-            <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-            <text x="60" y="49.5" text-anchor="middle" font-size="6" font-weight="900" fill="#FFFFFF">₹</text>
-          </g>
-          <g class="cash cash2">
-            <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyBlueX_${index})" stroke="#E8F7FF" stroke-width="1.5"/>
-            <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-            <text x="60" y="49.5" text-anchor="middle" font-size="7" font-weight="900" fill="#FFFFFF">$</text>
-          </g>
-          <g class="cash cash3">
-            <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyGoldX_${index})" stroke="#FFFBE0" stroke-width="1.5"/>
-            <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-            <text x="60" y="49.5" text-anchor="middle" font-size="7" font-weight="900" fill="#FFFFFF">€</text>
-          </g>
-          <rect x="25" y="62" width="70" height="50" rx="7" fill="url(#giftGoldX_${index})" stroke="#FFF1A8" stroke-width="2"/>
-          <rect x="55" y="62" width="10" height="50" rx="2" fill="url(#giftRedX_${index})"/>
-          <rect x="25" y="75" width="70" height="10" rx="2" fill="url(#giftRedX_${index})"/>
-          <g class="gift-lid-x">
-            <rect x="24" y="43" width="72" height="20" rx="5" fill="url(#giftGoldX_${index})" stroke="#FFF1A8" stroke-width="2"/>
-            <rect x="55" y="43" width="10" height="20" rx="2" fill="url(#giftRedX_${index})"/>
-            <path d="M60 43C45 31 35 35 39 43 C43 50 52 47 60 43Z" fill="url(#giftRedX_${index})"/>
-            <path d="M60 43C75 31 85 35 81 43 C77 50 68 47 60 43Z" fill="url(#giftRedX_${index})"/>
-          </g>
-          <path d="M34 91V103" stroke="#FFF8D0" stroke-width="3" stroke-linecap="round" opacity=".85"/>
-        </svg>`;
-
-        const bankSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%" aria-label="Premium Bank">
-          <defs>
-            <linearGradient id="roofRainbow_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#00E5FF"/>
-              <stop offset="30%" stop-color="#4169FF"/>
-              <stop offset="65%" stop-color="#9C42FF"/>
-              <stop offset="100%" stop-color="#FF3CAC"/>
-            </linearGradient>
-            <linearGradient id="buildingRainbow_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#00D4FF"/>
-              <stop offset="35%" stop-color="#007BFF"/>
-              <stop offset="70%" stop-color="#6C3BFF"/>
-              <stop offset="100%" stop-color="#B51EFF"/>
-            </linearGradient>
-            <linearGradient id="goldPremium_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FFF7A8"/>
-              <stop offset="35%" stop-color="#FFD84D"/>
-              <stop offset="70%" stop-color="#FF9F1C"/>
-              <stop offset="100%" stop-color="#E05A00"/>
-            </linearGradient>
-            <linearGradient id="columnGlass_${index}" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#FFFFFF"/>
-              <stop offset="45%" stop-color="#B8F7FF"/>
-              <stop offset="100%" stop-color="#6CDEFF"/>
-            </linearGradient>
-            <filter id="premiumGlow_${index}">
-              <feGaussianBlur stdDeviation="2" result="blur"/>
-              <feMerge>
-                <feMergeNode in="blur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-          <path d="M10 35L50 10L90 35Z" fill="url(#roofRainbow_${index})" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round" filter="url(#premiumGlow_${index})"/>
-          <path d="M21 31L50 14L79 31" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".75"/>
-          <rect x="14" y="34" width="72" height="48" rx="6" fill="url(#buildingRainbow_${index})" stroke="#8FEFFF" stroke-width="2.5"/>
-          <rect x="20" y="42" width="12" height="31" rx="3" fill="url(#columnGlass_${index})" stroke="#FFFFFF" stroke-width="1.5"/>
-          <rect x="44" y="42" width="12" height="31" rx="3" fill="url(#columnGlass_${index})" stroke="#FFFFFF" stroke-width="1.5"/>
-          <rect x="68" y="42" width="12" height="31" rx="3" fill="url(#columnGlass_${index})" stroke="#FFFFFF" stroke-width="1.5"/>
-          <path d="M23 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-          <path d="M47 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-          <path d="M71 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-          <rect x="8" y="75" width="84" height="10" rx="4" fill="url(#goldPremium_${index})" stroke="#FFF4A0" stroke-width="2"/>
-          <circle cx="50" cy="23" r="9" fill="url(#goldPremium_${index})" stroke="#FFF8C4" stroke-width="2" filter="url(#premiumGlow_${index})"/>
-          <text x="50" y="27" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#6B25B8">₹</text>
-          <path d="M12 48L16 52L12 56L8 52Z" fill="#00FFD5"/>
-          <path d="M88 48L92 52L88 56L84 52Z" fill="#FFD84D"/>
-        </svg>`;
-
-        const bonusIcon = `<span class="icon-svg">${giftSvg}</span>`;
-        const withdrawIcon = `<span class="icon-svg">${bankSvg}</span>`;
+        const bonusIcon = `<span class="icon-svg">${makeBonusLedIcon(index)}</span>`;
+        const withdrawIcon = `<span class="icon-svg">${makeWithdrawLedIcon(index)}</span>`;
 
         card.innerHTML = `
           <div class="card-img">
@@ -4628,111 +4567,8 @@
         card.dataset.metaBonus = metaBonus;
         card.dataset.version = version;
 
-        const giftSvg = `<svg viewBox="0 0 120 140" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <linearGradient id="giftGoldX_h_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FFE66D"/>
-              <stop offset="50%" stop-color="#FFB300"/>
-              <stop offset="100%" stop-color="#E88900"/>
-            </linearGradient>
-            <linearGradient id="giftRedX_h_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FF5278"/>
-              <stop offset="100%" stop-color="#C90035"/>
-            </linearGradient>
-            <linearGradient id="moneyGreenX_h_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#B8FFD9"/>
-              <stop offset="50%" stop-color="#00D978"/>
-              <stop offset="100%" stop-color="#008B50"/>
-            </linearGradient>
-            <linearGradient id="moneyBlueX_h_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#B9E8FF"/>
-              <stop offset="50%" stop-color="#2196F3"/>
-              <stop offset="100%" stop-color="#0756C9"/>
-            </linearGradient>
-            <linearGradient id="moneyGoldX_h_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FFF2A8"/>
-              <stop offset="50%" stop-color="#FFD000"/>
-              <stop offset="100%" stop-color="#D88900"/>
-            </linearGradient>
-          </defs>
-          <g class="cash cash1">
-            <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyGreenX_h_${index})" stroke="#E8FFF2" stroke-width="1.5"/>
-            <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-            <text x="60" y="49.5" text-anchor="middle" font-size="6" font-weight="900" fill="#FFFFFF">₹</text>
-          </g>
-          <g class="cash cash2">
-            <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyBlueX_h_${index})" stroke="#E8F7FF" stroke-width="1.5"/>
-            <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-            <text x="60" y="49.5" text-anchor="middle" font-size="7" font-weight="900" fill="#FFFFFF">$</text>
-          </g>
-          <g class="cash cash3">
-            <rect x="47" y="40" width="26" height="14" rx="3" fill="url(#moneyGoldX_h_${index})" stroke="#FFFBE0" stroke-width="1.5"/>
-            <circle cx="60" cy="47" r="4" fill="none" stroke="#FFFFFF" stroke-width="1.2"/>
-            <text x="60" y="49.5" text-anchor="middle" font-size="7" font-weight="900" fill="#FFFFFF">€</text>
-          </g>
-          <rect x="25" y="62" width="70" height="50" rx="7" fill="url(#giftGoldX_h_${index})" stroke="#FFF1A8" stroke-width="2"/>
-          <rect x="55" y="62" width="10" height="50" rx="2" fill="url(#giftRedX_h_${index})"/>
-          <rect x="25" y="75" width="70" height="10" rx="2" fill="url(#giftRedX_h_${index})"/>
-          <g class="gift-lid-x">
-            <rect x="24" y="43" width="72" height="20" rx="5" fill="url(#giftGoldX_h_${index})" stroke="#FFF1A8" stroke-width="2"/>
-            <rect x="55" y="43" width="10" height="20" rx="2" fill="url(#giftRedX_h_${index})"/>
-            <path d="M60 43C45 31 35 35 39 43 C43 50 52 47 60 43Z" fill="url(#giftRedX_h_${index})"/>
-            <path d="M60 43C75 31 85 35 81 43 C77 50 68 47 60 43Z" fill="url(#giftRedX_h_${index})"/>
-          </g>
-          <path d="M34 91V103" stroke="#FFF8D0" stroke-width="3" stroke-linecap="round" opacity=".85"/>
-        </svg>`;
-
-        const bankSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%" aria-label="Premium Bank">
-          <defs>
-            <linearGradient id="roofRainbow_h_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#00E5FF"/>
-              <stop offset="30%" stop-color="#4169FF"/>
-              <stop offset="65%" stop-color="#9C42FF"/>
-              <stop offset="100%" stop-color="#FF3CAC"/>
-            </linearGradient>
-            <linearGradient id="buildingRainbow_h_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#00D4FF"/>
-              <stop offset="35%" stop-color="#007BFF"/>
-              <stop offset="70%" stop-color="#6C3BFF"/>
-              <stop offset="100%" stop-color="#B51EFF"/>
-            </linearGradient>
-            <linearGradient id="goldPremium_h_${index}" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stop-color="#FFF7A8"/>
-              <stop offset="35%" stop-color="#FFD84D"/>
-              <stop offset="70%" stop-color="#FF9F1C"/>
-              <stop offset="100%" stop-color="#E05A00"/>
-            </linearGradient>
-            <linearGradient id="columnGlass_h_${index}" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#FFFFFF"/>
-              <stop offset="45%" stop-color="#B8F7FF"/>
-              <stop offset="100%" stop-color="#6CDEFF"/>
-            </linearGradient>
-            <filter id="premiumGlow_h_${index}">
-              <feGaussianBlur stdDeviation="2" result="blur"/>
-              <feMerge>
-                <feMergeNode in="blur"/>
-                <feMergeNode in="SourceGraphic"/>
-              </feMerge>
-            </filter>
-          </defs>
-          <path d="M10 35L50 10L90 35Z" fill="url(#roofRainbow_h_${index})" stroke="#FFFFFF" stroke-width="2.5" stroke-linejoin="round" filter="url(#premiumGlow_h_${index})"/>
-          <path d="M21 31L50 14L79 31" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".75"/>
-          <rect x="14" y="34" width="72" height="48" rx="6" fill="url(#buildingRainbow_h_${index})" stroke="#8FEFFF" stroke-width="2.5"/>
-          <rect x="20" y="42" width="12" height="31" rx="3" fill="url(#columnGlass_h_${index})" stroke="#FFFFFF" stroke-width="1.5"/>
-          <rect x="44" y="42" width="12" height="31" rx="3" fill="url(#columnGlass_h_${index})" stroke="#FFFFFF" stroke-width="1.5"/>
-          <rect x="68" y="42" width="12" height="31" rx="3" fill="url(#columnGlass_h_${index})" stroke="#FFFFFF" stroke-width="1.5"/>
-          <path d="M23 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-          <path d="M47 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-          <path d="M71 45V68" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-          <rect x="8" y="75" width="84" height="10" rx="4" fill="url(#goldPremium_h_${index})" stroke="#FFF4A0" stroke-width="2"/>
-          <circle cx="50" cy="23" r="9" fill="url(#goldPremium_h_${index})" stroke="#FFF8C4" stroke-width="2" filter="url(#premiumGlow_h_${index})"/>
-          <text x="50" y="27" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#6B25B8">₹</text>
-          <path d="M12 48L16 52L12 56L8 52Z" fill="#00FFD5"/>
-          <path d="M88 48L92 52L88 56L84 52Z" fill="#FFD84D"/>
-        </svg>`;
-
-        const bonusIcon = `<span class="icon-svg-home">${giftSvg}</span>`;
-        const withdrawIcon = `<span class="icon-svg-home">${bankSvg}</span>`;
+        const bonusIcon = `<span class="icon-svg-home">${makeBonusLedIcon(index)}</span>`;
+        const withdrawIcon = `<span class="icon-svg-home">${makeWithdrawLedIcon(index)}</span>`;
 
         card.innerHTML = `
           <div class="card-img-home">
@@ -4781,6 +4617,8 @@
         {
 
           title: 'Choosing the Right Game',
+          iconColor: 'led-purple',
+          iconSvg: '<rect x="2" y="7" width="20" height="11" rx="5"/><path d="M7 10.5v4M5 12.5h4"/><circle cx="16" cy="11" r="1.1"/><circle cx="18.5" cy="13.5" r="1.1"/>',
           opener: 'Since you\'re looking at {NAME}, here\'s how to decide if it fits what you want:',
           tags: [
             'Match the game to your style — Rummy and Teen Patti reward strategy, while Slots and Bingo are quicker, luck-based rounds.',
@@ -4793,6 +4631,8 @@
         },
         {
           title: 'Deposit & Withdrawal Basics',
+          iconColor: 'led-gold',
+          iconSvg: '<path d="M3 7a2 2 0 0 1 2-2h13a1 1 0 0 1 1 1v3"/><path d="M3 7v11a2 2 0 0 0 2 2h14a1 1 0 0 0 1-1V10a1 1 0 0 0-1-1h-4a2 2 0 1 0 0 4h5"/>',
           opener: 'For {NAME} specifically, keep these payout basics in mind:',
           tags: [
             'Most apps process UPI withdrawals within a few hours once KYC is complete.',
@@ -4805,6 +4645,8 @@
         },
         {
           title: 'Account & Login Safety',
+          iconColor: 'led-red',
+          iconSvg: '<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><rect x="15" y="14" width="7" height="6" rx="1"/><path d="M16.5 14v-1.5a1.5 1.5 0 0 1 3 0V14"/>',
           opener: 'Before you sign in to {NAME}, a few safety reminders:',
           tags: [
             'Never share the OTP sent to your phone with anyone, including someone claiming to be support.',
@@ -4817,6 +4659,8 @@
         },
         {
           title: 'Bonus & Referral Tips',
+          iconColor: 'led-orange',
+          iconSvg: '<circle cx="12" cy="12" r="10"/><path d="M12 6v2M12 16v2M8 12H6M18 12h-2"/><circle cx="12" cy="12" r="3"/>',
           opener: '{NAME}\'s bonus and referral system works similar to this:',
           tags: [
             'Welcome bonuses are usually credited instantly but may have wagering conditions — check in-app terms.',
@@ -4829,6 +4673,8 @@
         },
         {
           title: 'Getting Help & Support',
+          iconColor: 'led-teal',
+          iconSvg: '<path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3z"/><path d="M3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>',
           opener: 'Need help while using {NAME}? Start here:',
           tags: [
             'Use the in-app chat support first — it\'s usually the fastest way to resolve payout questions.',
@@ -4849,7 +4695,7 @@
         const head = document.createElement('div');
         head.className = 'quick-fact-head';
         head.innerHTML = `
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+          <span class="led-badge ${group.iconColor}"><svg viewBox="0 0 24 24">${group.iconSvg}</svg></span>
           <span>${group.title}</span>
         `;
         box.appendChild(head);
@@ -4938,11 +4784,19 @@
         window.open(game.downloadUrl, '_blank');
         return false;
       };
-      // Reset scroll-reveal state for the download button on every new app view
-      // (also fixes the bug where clicking an app from "Other Related Yono
-      // Games" left the sticky download bar in the wrong state)
-      downloadBtn.classList.add('scroll-hidden');
-      downloadBtn.classList.remove('dl-sticky');
+
+      // Sticky scroll-triggered download bar — same link, resets visibility
+      // on every new app view (fixes it staying wrongly shown/hidden after
+      // clicking an app from "Other Related Yono Games")
+      const downloadBtnSticky = document.getElementById('detailDownloadBtnSticky');
+      if (downloadBtnSticky) {
+        downloadBtnSticky.onclick = function(e) {
+          e.preventDefault();
+          window.open(game.downloadUrl, '_blank');
+          return false;
+        };
+        downloadBtnSticky.classList.remove('visible');
+      }
       document.getElementById('apkBonusLine').textContent = game.bonus;
 
       var refData = generateReferralData(game.name, game.bonus);
@@ -5019,8 +4873,8 @@
         const aboutHead = document.createElement('div');
         aboutHead.className = 'tag-head';
         aboutHead.innerHTML = `
-          <span class="svg-icon" style="display:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;">
+          <span class="led-badge led-blue" style="display:inline-flex;">
+            <svg viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="10"/>
               <line x1="12" y1="16" x2="12" y2="12"/>
               <line x1="12" y1="8" x2="12.01" y2="8"/>
@@ -5192,13 +5046,13 @@
         fab.classList.toggle('fab-raised', revealed && inDetailView);
       }
 
-      // Download button: hidden at load, becomes a fixed bottom-center bar
-      // once revealed so it stays visible while scrolling through Top Offers,
-      // About, Safety & Security and Other Related Yono Games.
-      const dlBtn = document.getElementById('detailDownloadBtn');
-      if (dlBtn && inDetailView) {
-        dlBtn.classList.toggle('scroll-hidden', !revealed);
-        dlBtn.classList.toggle('dl-sticky', revealed);
+      // The ORIGINAL "Download APK" button above Top Offers stays in its old
+      // position and is always visible — no scroll control on it anymore.
+      // Only the separate STICKY bar (bottom-center) reveals on scroll, and
+      // only while an app's detail page is open.
+      const dlSticky = document.getElementById('detailDownloadBtnSticky');
+      if (dlSticky) {
+        dlSticky.classList.toggle('visible', revealed && inDetailView);
       }
     }
 
